@@ -1,0 +1,16 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    discourse: string
+    beliefs: string
+    utterance: string
+output:
+  format: json
+  schema:
+    move: string
+    utterance: string
+---
+
+Take one of the following moves:

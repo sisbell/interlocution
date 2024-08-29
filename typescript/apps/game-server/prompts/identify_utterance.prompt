@@ -1,0 +1,33 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    discourse: string
+    utterance: string
+output:
+  format: json
+  schema:
+    move: string
+    meaning: string
+---
+### Discourse ###
+{{discourse}}
+
+### Current User Message ####
+{{utterance}}
+
+### Rules ###
+Based on the discourse, decide the best move which classifies the current user message
+* ASK_INFLUENCE - is a question that is specific to a previous question. To take this move, Discourse must end in ASK or ASK_INFLUENCE.
+* ASK -  is a question that is not specific to a previous question or their is no message at all
+* ASSERT - asserts a proposition
+* ACCEPT - accepts an assertion
+* CHECK - a request for confirmation
+* CONFIRM - If last message in the conversation is a CHECK and the current user message is an assertion
+
+Meaning includes the meaning of the current user message, the speaker's name and information about the move. This should be a natural sounding message.
+
+
+
+

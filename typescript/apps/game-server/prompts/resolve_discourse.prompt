@@ -1,0 +1,55 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    discourse: string
+    facts: string
+output:
+  format: json
+  schema:
+    resolvedIds(array): number
+    facts(array):
+      proposition: string
+      resolvedId: number
+    reason: string
+---
+Discourse
+{{discourse}}
+
+Facts
+{{facts}}
+
+Objective:
+Track the evolution of a discourse by identifying propositions that become irrelevant or resolved due to new information.
+This process aids in understanding the flow of conversation and identifying key points of agreement or disagreement.
+
+Discourse Data: A structured representation of the conversation, including:
+* Speaker IDs (A, B, etc.)
+* Utterance IDs (1, 2, 3, etc.)
+* Utterance Types (ASK, ASSERT, ACCEPT, etc.)
+* Utterance Content (the text of each statement or question)
+
+Set of Propositions Under Discussion (PUD):
+* A list of Utterance IDs that are currently relevant to the discourse.
+
+Steps:
+1.Fact Update (Optional): If a new assertion (ASSERT type utterance) is made and deemed valid, add it to the set of FACTS. You can break long facts into shorter ones for clarity.
+
+2. Discourse Downdate
+For each new utterance:
+* Identify the type of utterance (ASK, ASSERT, ACCEPT, etc.).
+  If the utterance is an ACCEPT type:
+  Identify the proposition ID being accepted.
+  Mark this proposition ID as resolved.
+* If the utterance is an ASSERT type and introduces new information:
+  Analyze the PUD to identify any propositions that are now resolved or partially resolved due to the new information.
+  Mark resolved propositions accordingly.
+  Collect a Fact
+  Downdating utterance ids must be sequential, you can't skip
+
+Output:
+* Updated FACTS: The expanded set of confirmed information (if any ASSERT utterances were processed).
+* Downdated Utterance IDs (resolvedIds): A list of Utterance IDs that have been marked as resolved due to acceptance or if they were used in adding a fact
+* reason - explain why you downdated each of the utterances (if applicable)
+

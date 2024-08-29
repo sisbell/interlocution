@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "remove-modules": "rm -rf ./node_modules",
+    "build": "pnpm install && pnpm build:core",
+    "build:core": "pnpm -r --workspace-concurrency 1 -F core -F flows build",
+    "watch:core": "nodemon --watch packages/core/lib --exec 'pnpm --filter ./packages/flows build && pnpm --filter ./apps/game-server build'"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.4",
+    "npm-run-all": "^4.1.5",
+    "only-allow": "^1.2.1",
+    "typescript": "^5.5.3"
+  },
+  "packageManager": "pnpm@9.7.1+sha256.46f1bbc8f8020aa9869568c387198f1a813f21fb44c82f400e7d1dbde6c70b40"
+}

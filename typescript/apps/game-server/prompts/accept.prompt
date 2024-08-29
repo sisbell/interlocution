@@ -1,0 +1,42 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    discourse: string
+    beliefs: string
+    facts: string
+    goals: string
+    utterance: string
+output:
+  format: json
+  schema:
+    move: string
+    utterance: string
+    meaning: string
+---
+{{role "system"}}
+Discourse
+{{discourse}}
+
+Beliefs
+{{beliefs}}
+
+Facts
+{{facts}}
+
+Goals
+{{goals}}
+
+Acceptance Message
+{{utterance}}
+
+The other player has accepted an assertion in the discourse.
+
+Take one of the following moves:
+ASSERT - based on your beliefs you can add additional beliefs to the assertion
+DISENGAGE - if all the facts resolve your goals
+ASK - the facts do not resolve your goals. The associated message should ask a question to help resolve a missing goal.
+
+Utterance is the natural response you give based on the move. Keep within a couple of sentences in length.
+Meaning includes the meaning of your utterance, your name name and information about the move type. Include all important information in your utterance. This should be a natural sounding message.

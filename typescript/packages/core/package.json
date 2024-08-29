@@ -1,0 +1,60 @@
+{
+  "name": "@interlocution/core",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "type": "commonjs",
+  "scripts": {
+    "check": "tsc",
+    "compile": "tsup-node",
+    "clean": "rm -rf ./lib",
+    "remove-modules": "rm -rf ./node_modules",
+    "build": "npm-run-all clean check compile",
+    "build:watch": "tsup-node --watch",
+    "test": "node --test test"
+  },
+  "author": "Shane Isbell",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@genkit-ai/ai": "^0.5.10",
+    "@genkit-ai/core": "^0.5.10",
+    "@genkit-ai/dotprompt": "^0.5.10",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "prettier": "^3.3.3",
+    "tsx": "^4.17.0",
+    "tsup": "^8.2.4",
+    "typescript": "^5.5.3",
+    "npm-run-all": "^4.1.5"
+  },
+  "types": "lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "require": "./lib/index.js",
+      "import": "./lib/index.mjs"
+    },
+    "./actions": {
+      "types": "./lib/actions.d.ts",
+      "require": "./lib/actions.js",
+      "import": "./lib/actions.mjs"
+    },
+    "./controllers": {
+      "types": "./lib/controllers.d.ts",
+      "require": "./lib/controllers.js",
+      "import": "./lib/controllers.mjs"
+    },
+    "./information_state": {
+      "types": "./lib/information_state.d.ts",
+      "require": "./lib/information_state.js",
+      "import": "./lib/information_state.mjs"
+    },
+    "./models": {
+      "types": "./lib/models.d.ts",
+      "require": "./lib/models.js",
+      "import": "./lib/models.mjs"
+    }
+  }
+}

@@ -1,0 +1,33 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    discourse: string
+    beliefs: string
+    utterance: string
+output:
+  format: json
+  schema:
+    move: string
+    utterance: string
+    meaning: string
+---
+{{role "system"}}
+Discourse
+{{discourse}}
+
+Beliefs
+{{beliefs}}
+
+Message
+{{utterance}}
+
+Use the discourse to understand the context of the message.
+Based on your beliefs, either confirm or deny the message.
+
+Take one of the following moves:
+CONFIRM, DENY
+
+Meaning includes the meaning of your utterance, your name name and information about the move type. Include all important information in your utterance. This should be a natural sounding message.
+
