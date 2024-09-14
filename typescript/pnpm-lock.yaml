@@ -24,20 +24,20 @@ importers:
   apps/game-server:
     dependencies:
       '@genkit-ai/ai':
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.13
+        version: 0.5.13
       '@genkit-ai/core':
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.13
+        version: 0.5.13
       '@genkit-ai/dotprompt':
-        specifier: ^0.5.12
-        version: 0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12)
+        specifier: ^0.5.13
+        version: 0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13)
       '@genkit-ai/flow':
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.13
+        version: 0.5.13
       '@genkit-ai/vertexai':
-        specifier: ^0.5.12
-        version: 0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12)(@genkit-ai/flow@0.5.12)
+        specifier: ^0.5.13
+        version: 0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13)(@genkit-ai/flow@0.5.13)
       '@interlocution/core':
         specifier: workspace:*
         version: link:../../packages/core
@@ -54,8 +54,8 @@ importers:
         specifier: ^4.19.2
         version: 4.19.2
       genkitx-ollama:
-        specifier: ^0.5.12
-        version: 0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12)
+        specifier: ^0.5.13
+        version: 0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -85,14 +85,14 @@ importers:
   packages/core:
     dependencies:
       '@genkit-ai/ai':
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.13
+        version: 0.5.13
       '@genkit-ai/core':
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.13
+        version: 0.5.13
       '@genkit-ai/dotprompt':
-        specifier: ^0.5.12
-        version: 0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12)
+        specifier: ^0.5.13
+        version: 0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13)
       zod:
         specifier: ^3.23.8
         version: 3.23.8
@@ -119,8 +119,8 @@ importers:
   packages/flows:
     dependencies:
       '@genkit-ai/flow':
-        specifier: ^0.5.12
-        version: 0.5.12
+        specifier: ^0.5.13
+        version: 0.5.13
       '@interlocution/core':
         specifier: workspace:*
         version: link:../core
@@ -326,27 +326,27 @@ packages:
   '@firebase/util@1.9.7':
     resolution: {integrity: sha512-fBVNH/8bRbYjqlbIhZ+lBtdAAS4WqZumx03K06/u7fJSpz1TGjEMm1ImvKD47w+xaFKIP2ori6z8BrbakRfjJA==}
 
-  '@genkit-ai/ai@0.5.12':
-    resolution: {integrity: sha512-wFcblJqv1b7OKmFnYQgxNA3C3mHv0fYxG11UgNqkWvid8xHJUK9cAHAV21jnk10oJcsB3P/E9E1jjVa/Ra+SDw==}
+  '@genkit-ai/ai@0.5.13':
+    resolution: {integrity: sha512-X2mIRjc5C65YrHrrlkpZlk3VTjU6yQ10XVy0E1RsOyBzbUFUQVoc0I2djPS1v4Z4sVVIWRuOGwfEicYL3jA3lw==}
 
-  '@genkit-ai/core@0.5.12':
-    resolution: {integrity: sha512-OjwvjDkwGRU5kyn2jRwJTcihFtJfm0uOQ2uFBBiDwvD3tH4NDDnDw/QFjZi65MY6gnoOYT816k1Hk12sHn6xQA==}
+  '@genkit-ai/core@0.5.13':
+    resolution: {integrity: sha512-KVXhZYNVjsQNK8j4BiJaK+JWsJ1lxWk9+kaUH5iEHE+I+fxTrOLidEsz+BL0gJLS9qim1j84+oYrd++9/hWBPw==}
 
-  '@genkit-ai/dotprompt@0.5.12':
-    resolution: {integrity: sha512-UC60cD/0S7I6DXW90U2yu4wM4dYzb8sERsDJ3TALushXuzKX6z78BFuIQ8zZFxpbMuE63IHhurEcfe4asKycQw==}
+  '@genkit-ai/dotprompt@0.5.13':
+    resolution: {integrity: sha512-/fPjQXaJDWLM1+H7xmSdhQqdA9xbioyzYrxZKmHHKgFjFBJNZ8iR0DZrEkr8rjHJMUXmbWW/wv1JcDrQQj0oKQ==}
     peerDependencies:
-      '@genkit-ai/ai': 0.5.12
-      '@genkit-ai/core': 0.5.12
+      '@genkit-ai/ai': 0.5.13
+      '@genkit-ai/core': 0.5.13
 
-  '@genkit-ai/flow@0.5.12':
-    resolution: {integrity: sha512-HpysrfQj2XYxOAbAX5hhDzzh5Lq0Tdf4I4Mk2AV1ja0DNZYKI/7/BInya1EmxNO/7vnDH2bFVWjm13GbZQQNFQ==}
+  '@genkit-ai/flow@0.5.13':
+    resolution: {integrity: sha512-0tUr9ZWRVCDJbpiEU+sZlVGTLtW/x8pcmexIWRoCPiA7ZEI2/ZCi95vYJK2xMwxDEMglsGqqYAKqAsreyL5Nqw==}
 
-  '@genkit-ai/vertexai@0.5.12':
-    resolution: {integrity: sha512-0QpWYtG00lCQMwXUcLT1athvDLFxr7N+0ZXvAToBsFU3/7zkvRkse1kIe9GBxzpYVZ3sY/Fd5V9k+XbilDNE7Q==}
+  '@genkit-ai/vertexai@0.5.13':
+    resolution: {integrity: sha512-tHtjiV2/1bbMeGqZDJK0eCy/9O75FY037NtFn3k1as5+sVBoTmj0xEOX+B4ZnmARy5pgvMqxPRD4Q0m76+vOjw==}
     peerDependencies:
-      '@genkit-ai/ai': 0.5.12
-      '@genkit-ai/core': 0.5.12
-      '@genkit-ai/flow': 0.5.12
+      '@genkit-ai/ai': 0.5.13
+      '@genkit-ai/core': 0.5.13
+      '@genkit-ai/flow': 0.5.13
 
   '@google-cloud/aiplatform@3.26.0':
     resolution: {integrity: sha512-dw4hfH2A/rJ7dcvPptnvqGwsjxl4xQ722EKWnwRFAgPtFHGfOPQVslXpSZKFsKlF/AIWa7F580Mcvs5W8T4H4A==}
@@ -1232,11 +1232,11 @@ packages:
     resolution: {integrity: sha512-Jh/AIwwgaxan+7ZUUmRLCjtchyDiqh4KjBJ5tW3plBZb5iL/BPcso8A5DlzeD9qlw0duCamnNdpFjxwaT0KyKg==}
     engines: {node: '>=14'}
 
-  genkitx-ollama@0.5.12:
-    resolution: {integrity: sha512-AJvcLv9u3mqu2BageZ3QXN+dVmXdr/epaMqAros/JzqXm3osqicdmWzhbQe1bl7brhBGHdm8Qq1st5yA8QkJaQ==}
+  genkitx-ollama@0.5.13:
+    resolution: {integrity: sha512-Ob2f/DKxcpiN1f8AuwEDfNdTcM9/AVa7RxWLme7CjfHDEsCVmdCaDVPnMa7uPl2ohG+eHwShoHndmheYb6DffQ==}
     peerDependencies:
-      '@genkit-ai/ai': 0.5.12
-      '@genkit-ai/core': 0.5.12
+      '@genkit-ai/ai': 0.5.13
+      '@genkit-ai/core': 0.5.13
 
   get-caller-file@2.0.5:
     resolution: {integrity: sha512-DyFP3BM/3YHTQOCUL/w0OZHR0lpKeGrxotcHWcqNEdnltqFwXVfhEBQ94eIo34AfQpo0rGki4cyIiftY06h2Fg==}
@@ -2515,9 +2515,9 @@ snapshots:
     dependencies:
       tslib: 2.6.3
 
-  '@genkit-ai/ai@0.5.12':
+  '@genkit-ai/ai@0.5.13':
     dependencies:
-      '@genkit-ai/core': 0.5.12
+      '@genkit-ai/core': 0.5.13
       '@opentelemetry/api': 1.9.0
       '@types/node': 20.15.0
       colorette: 2.0.20
@@ -2528,7 +2528,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@genkit-ai/core@0.5.12':
+  '@genkit-ai/core@0.5.13':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/context-async-hooks': 1.25.1(@opentelemetry/api@1.9.0)
@@ -2546,18 +2546,18 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  '@genkit-ai/dotprompt@0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12)':
+  '@genkit-ai/dotprompt@0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13)':
     dependencies:
-      '@genkit-ai/ai': 0.5.12
-      '@genkit-ai/core': 0.5.12
+      '@genkit-ai/ai': 0.5.13
+      '@genkit-ai/core': 0.5.13
       front-matter: 4.0.2
       handlebars: 4.7.8
       node-fetch: 3.3.2
       zod: 3.23.8
 
-  '@genkit-ai/flow@0.5.12':
+  '@genkit-ai/flow@0.5.13':
     dependencies:
-      '@genkit-ai/core': 0.5.12
+      '@genkit-ai/core': 0.5.13
       '@google-cloud/firestore': 7.9.0
       '@opentelemetry/api': 1.9.0
       '@types/cors': 2.8.17
@@ -2572,13 +2572,13 @@ snapshots:
       - encoding
       - supports-color
 
-  '@genkit-ai/vertexai@0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12)(@genkit-ai/flow@0.5.12)':
+  '@genkit-ai/vertexai@0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13)(@genkit-ai/flow@0.5.13)':
     dependencies:
       '@anthropic-ai/sdk': 0.24.3
       '@anthropic-ai/vertex-sdk': 0.4.1
-      '@genkit-ai/ai': 0.5.12
-      '@genkit-ai/core': 0.5.12
-      '@genkit-ai/flow': 0.5.12
+      '@genkit-ai/ai': 0.5.13
+      '@genkit-ai/core': 0.5.13
+      '@genkit-ai/flow': 0.5.13
       '@google-cloud/aiplatform': 3.26.0
       '@google-cloud/vertexai': 1.4.1
       google-auth-library: 9.13.0
@@ -3702,10 +3702,10 @@ snapshots:
       - encoding
       - supports-color
 
-  genkitx-ollama@0.5.12(@genkit-ai/ai@0.5.12)(@genkit-ai/core@0.5.12):
+  genkitx-ollama@0.5.13(@genkit-ai/ai@0.5.13)(@genkit-ai/core@0.5.13):
     dependencies:
-      '@genkit-ai/ai': 0.5.12
-      '@genkit-ai/core': 0.5.12
+      '@genkit-ai/ai': 0.5.13
+      '@genkit-ai/core': 0.5.13
 
   get-caller-file@2.0.5: {}
 
