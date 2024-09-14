@@ -30,10 +30,10 @@ class _ChatScreenState extends State<ChatScreen> {
     setState(() {
       _messages.clear();
     });
-    var moves = totalInformationState.dialogGameboard.moves!;
+    var moves = totalInformationState.dialogGameBoard.moves!;
     for (var move in moves) {
       bool isActive = totalInformationState
-          .dialogGameboard.activeDiscourse!.entryIds
+          .dialogGameBoard.activeDiscourse!.entryIds
           .contains(move.discourseEntryId);
       var widget = IllocutionaryMetaWidget(move: move, isActive: isActive);
       setState(() {
@@ -145,7 +145,7 @@ class _BottomChatInputState extends State<BottomChatInput> {
                 _controller.clear();
                 try {
                   MakeUtteranceResponse? response =
-                      await client.makeUtterance(playerId, "You", messageText);
+                      await client.makeUtterance(playerId, "Human Player", messageText);
                   print('Message sent: $messageText');
                   print(response?.toJson());
                   widget.onMessageSent(response!.totalInformationState);

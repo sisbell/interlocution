@@ -10,7 +10,7 @@ class ResolvedScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final resolvedDiscourses =
-        totalInformationState?.dialogGameboard.resolvedDiscourses ?? [];
+        totalInformationState?.dialogGameBoard.resolvedDiscourses ?? [];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

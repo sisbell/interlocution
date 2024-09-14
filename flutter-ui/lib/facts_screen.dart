@@ -9,7 +9,7 @@ class FactsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final facts = totalInformationState?.dialogGameboard.facts ?? [];
+    final facts = totalInformationState?.dialogGameBoard.facts ?? [];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

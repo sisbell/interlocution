@@ -1,0 +1,42 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    goals: string
+    beliefs: string
+output:
+  format: text
+---
+{{role "system"}}
+Given the following goals and beliefs, construct a detailed plan to guide conversations towards achieving these goals while incorporating the beliefs:
+
+Plan Structure:
+
+* Guiding Principles:
+    * List 3-5 core principles that will guide the conversation strategy, incorporating the beliefs where relevant.
+
+* Conversation Stages:
+    * Outline 3-4 distinct stages of the conversation, each with a specific purpose and focus.
+
+* Questions and Prompts for Each Stage:
+    * For each stage, provide 2-3 sample questions or prompts that align with the stage's purpose and incorporate the beliefs.
+
+* Goal Achievement and Adaptation:
+    * Define clear criteria for recognizing when the goals have been accomplished.
+    * Emphasize the importance of adaptability and adjusting the conversation flow as needed.
+
+Remember:
+
+* The plan should be clear, actionable, and respectful.
+* Prioritize open-ended questions that encourage meaningful responses.
+* Ensure the questions and prompts align with the AI's beliefs and goals.
+
+Generate the plan.
+
+{{role "user"}}
+Goals
+{{goals}}
+
+Beliefs
+{{beliefs}}

@@ -4,8 +4,10 @@ config:
 input:
   schema:
     discourse: string
-    goals: string
     facts: string
+    plan: string
+    planStage?: string
+    planReason?: string
 output:
   format: json
   schema:
@@ -21,27 +23,30 @@ output:
     facts: N/A
 ---
 {{role "system"}}
-You are the speaker.
+Remain focused on following your plan of action and achieving your goals. Do not deviate.
 
-Discourse
-{{discourse}}
+# Your Plan of Action
+{{plan}}
 
-### Speaker's Goals ###
-{{goals}}
+# Current Planning Stage
+{{planStage}} - {{planReason}}
 
-### Facts ###
+# Observed Facts
 {{facts}}
 
-### Current Task ###
-Goal Identification: Clearly state the current goal the AI aims to achieve. This should be dynamically referenced from the AI's task list or goal-setting parameter.
+# Instructions
+Goal Identification: Clearly state the current goal the AI aims to achieve. This should be dynamically referenced from your plan of action.
 Fact Analysis: Analyze the facts already known or provided. This step involves checking the AI's current knowledge base or the inputs given by the user or system it's interacting with.
 Gap Detection: Identify what crucial information is missing that is necessary to achieve the goal. This involves comparing the known facts against the requirements of the goal.
 Question Formulation: Craft a specific question that, when answered, will provide the missing information needed to progress toward the goal. This question should be direct and precisely tailored to close the identified information gap. Don't try to gather all the missing information at one time if there is too much.
 Continuation or Conclusion: Decide whether further questions are needed after the initial query is resolved, or if the goal can be considered achieved with the acquired information.
 
-Note: If the status is DISENGAGE, the utterance will attempt to wrap up the conversation, otherwise the utterance will be a question.
+Note: If the status is COUNTER_PARTING, the utterance will attempt to wrap up the conversation, otherwise the utterance will be a question.
 
-Status will be one of the following values: "ENGAGE" | "DISENGAGE".
+Status will be one of the following values: "ENGAGE" | "COUNTER_PARTING".
 
 Utterance is the natural response you give based on the move. Keep within a couple of sentences in length.
 
+{{role "user"}}
+# Chat/Discourse History
+{{discourse}}

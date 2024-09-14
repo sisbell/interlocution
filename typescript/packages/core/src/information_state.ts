@@ -1,34 +1,33 @@
 import {
     DiscourseEntry,
-    DiscourseEntryType,
     DiscoursePool,
-    FactType,
-    GameboardType,
-    IllocutionaryPropositionType,
-    IllocutionaryRelation,
-    PrivateInformationStateType,
-    TotalInformationStateType,
+    Fact,
+    GameBoard,
+    IllocutionaryProposition,
+    IllocutionaryRelation, PlanInfo,
+    PrivateInformationState,
+    TotalInformationState,
 } from "./models";
 import {z} from "zod";
 
 export class DialogGameBoard {
-    readonly facts: FactType[];
-    readonly moves: IllocutionaryPropositionType[];
+    readonly facts: Fact[];
+    readonly moves: IllocutionaryProposition[];
     readonly resolvedDiscourses: string[];
     private activeDiscourseManager: ActiveDiscourseManager;
 
-    constructor(gameboard?: GameboardType) {
-        this.facts = gameboard?.facts || [];
-        this.moves = gameboard?.moves || [];
-        this.resolvedDiscourses = gameboard?.resolvedDiscourses || [];
+    constructor(gameBoard?: GameBoard) {
+        this.facts = gameBoard?.facts || [];
+        this.moves = gameBoard?.moves || [];
+        this.resolvedDiscourses = gameBoard?.resolvedDiscourses || [];
         this.activeDiscourseManager = new ActiveDiscourseManager(
-            gameboard?.discoursePool || {entries: {}},
-            gameboard?.activeDiscourse?.entryIds || [],
+            gameBoard?.discoursePool || {entries: {}},
+            gameBoard?.activeDiscourse?.entryIds || [],
 
         );
     }
 
-    toJson(): GameboardType {
+    toJson(): GameBoard {
         return {
             name: "Default",
             moves: this.moves,
@@ -48,7 +47,7 @@ export class DialogGameBoard {
         return latestMove === undefined || latestMove.utterance === null;
     }
 
-    addFact(fact: FactType): void {
+    addFact(fact: Fact): void {
         this.facts.push(fact);
     }
 
@@ -56,7 +55,7 @@ export class DialogGameBoard {
         this.resolvedDiscourses.push(reason);
     }
 
-    getFacts(): FactType[] {
+    getFacts(): Fact[] {
         return this.facts;
     }
 
@@ -64,12 +63,12 @@ export class DialogGameBoard {
         return this.facts.map((fact) => fact.proposition).join("\n");
     }
 
-    getLatestMove(): IllocutionaryPropositionType | undefined {
+    getLatestMove(): IllocutionaryProposition | undefined {
         return this.moves[this.moves.length - 1];
     }
 
-    getDiscourseAsString(): string {
-        const activeEntries: DiscourseEntryType[] =
+    getDiscourseAsStringCondensed(): string {
+        const activeEntries: DiscourseEntry[] =
             this.activeDiscourseManager.getActiveDiscourseEntries()!;
         if (!activeEntries) {
             return "N/A";
@@ -77,7 +76,21 @@ export class DialogGameBoard {
         return activeEntries
             .map(
                 (entry) =>
-                    `Speaker: ${entry.speaker}, Move: ${entry.tag}, ID: ${entry.id}, Utterance: ${entry.proposition}`,
+                    `(${entry.tag}) ${entry.role}: ${entry.proposition}`,
+            )
+            .join("\n");
+    }
+
+    getDiscourseAsStringFull(): string {
+        const activeEntries: DiscourseEntry[] =
+            this.activeDiscourseManager.getActiveDiscourseEntries()!;
+        if (!activeEntries) {
+            return "N/A";
+        }
+        return activeEntries
+            .map(
+                (entry) =>
+                    `Speaker: ${entry.speaker}, Role: ${entry.role}, Move: ${entry.tag}, ID: ${entry.id}, Utterance: ${entry.proposition}`,
             )
             .join("\n");
     }
@@ -86,14 +99,14 @@ export class DialogGameBoard {
         return this.moves.length > 0;
     }
 
-    playLatestMove(latestMove: IllocutionaryPropositionType): void {
+    playLatestMove(latestMove: IllocutionaryProposition): void {
         console.log(latestMove);
         const currentDiscourseEntryId =
             this.activeDiscourseManager.getLastEntryId() + 1;
         latestMove.discourseEntryId = currentDiscourseEntryId;
         this.moves.push(latestMove);
 
-        const discourseEntry: DiscourseEntryType = {
+        const discourseEntry: DiscourseEntry = {
             id: currentDiscourseEntryId,
             tag: latestMove.illocutionaryRelation,
             proposition: latestMove.utterance!,
@@ -103,6 +116,7 @@ export class DialogGameBoard {
                     : currentDiscourseEntryId - 1,
             speaker: latestMove.speaker,
             addressee: latestMove.addressee,
+            role: latestMove.role
         };
         this.activeDiscourseManager.addEntryToPool(discourseEntry);
         this.activeDiscourseManager.addActiveDiscourseEntry(discourseEntry);
@@ -115,7 +129,7 @@ export class DialogGameBoard {
 
 export class ActiveDiscourseManager {
     private activeDiscourseEntryIds: number[];
-    readonly discoursePool: Map<number, z.infer<typeof DiscourseEntry>>;
+    readonly discoursePool: Map<number, DiscourseEntry>;
 
     constructor(
         initialPool: z.infer<typeof DiscoursePool> = {entries: {}},
@@ -137,7 +151,7 @@ export class ActiveDiscourseManager {
     }
 
     addActiveDiscourseEntry(
-        discourseEntry: z.infer<typeof DiscourseEntry>,
+        discourseEntry: DiscourseEntry,
     ): void {
         if (this.discoursePool.has(discourseEntry.id)) {
             this.activeDiscourseEntryIds.push(discourseEntry.id);
@@ -146,7 +160,7 @@ export class ActiveDiscourseManager {
         }
     }
 
-    addEntryToPool(newDiscourseEntry: z.infer<typeof DiscourseEntry>): void {
+    addEntryToPool(newDiscourseEntry: DiscourseEntry): void {
         if (this.discoursePool.has(newDiscourseEntry.id)) {
             throw new Error("Entry ID already exists in the pool.");
         }
@@ -160,7 +174,7 @@ export class ActiveDiscourseManager {
         );
     }
 
-    getActiveEntries(): z.infer<typeof DiscourseEntry>[] {
+    getActiveEntries():  DiscourseEntry[] {
         return Array.from(this.activeDiscourseEntryIds).map(
             (id) => this.discoursePool.get(id)!,
         );
@@ -189,7 +203,7 @@ export class ActiveDiscourseManager {
         return {entries};
     }
 
-    getActiveDiscourseEntries(): z.infer<typeof DiscourseEntry>[] | null {
+    getActiveDiscourseEntries(): DiscourseEntry[] | null {
         const lastActiveEntryId =
             this.activeDiscourseEntryIds[
             this.activeDiscourseEntryIds.length - 1
@@ -199,7 +213,7 @@ export class ActiveDiscourseManager {
             return null;
         }
 
-        const linkedActiveEntries: z.infer<typeof DiscourseEntry>[] = [];
+        const linkedActiveEntries: DiscourseEntry[] = [];
         let currentQuestionId: number | undefined = lastActiveEntryId;
 
         while (currentQuestionId !== undefined) {
@@ -234,10 +248,10 @@ export class DialogTIS {
         this.privateInformationState = privateInformationState;
     }
 
-    toJson(): TotalInformationStateType {
+    toJson(): TotalInformationState {
         return {
             privateInformationState: this.privateInformationState.toJson(),
-            dialogGameboard: this.dgb.toJson(),
+            dialogGameBoard: this.dgb.toJson(),
         };
     }
 }
@@ -249,18 +263,21 @@ export class DialogPIS {
 
     beliefs: string;
 
-    constructor(p: PrivateInformationStateType) {
+    planInfo?: PlanInfo;
+
+    constructor(p: PrivateInformationState) {
         this.genre = p.genre;
         this.goals = p.goals || "";
         this.beliefs = p.beliefs || "";
+        this.planInfo = p.planInfo
     }
 
-    toJson(): PrivateInformationStateType {
+    toJson(): PrivateInformationState {
         return {
             genre: this.genre,
             goals: this.goals,
             beliefs: this.beliefs,
-            agenda: [],
+            planInfo: this.planInfo
         };
     }
 }

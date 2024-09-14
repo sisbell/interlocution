@@ -1,0 +1,12 @@
+---
+config:
+  temperature: 1.0
+input:
+  schema:
+    utterance: string
+output:
+  format: json
+  schema:
+    utterance: string
+    meaning: string
+---

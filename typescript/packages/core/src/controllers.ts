@@ -1,11 +1,11 @@
 import {
-    IllocutionaryPropositionType,
+    IllocutionaryProposition,
     IllocutionaryRelation,
-    ModelConfigType,
-    MultiPlayerGameOutputType,
-    OnePlayerGameOutputType,
-    PlayerType,
-    TotalInformationStateType
+    ModelConfig,
+    MultiPlayerGameOutput,
+    OnePlayerGameOutput,
+    Player,
+    TotalInformationState
 } from "./models";
 import {DialogGameBoard, DialogPIS, DialogTIS} from "./information_state";
 import {
@@ -13,6 +13,7 @@ import {
     IdentifyMoveWithOtherUtteranceAction,
     ResolveDiscourseGameAction,
 } from "./actions";
+import {z} from "zod";
 
 export class LanguageGameController {
     private twoPlayerController: TwoPlayerController;
@@ -38,7 +39,7 @@ export class PlayerController {
 
     async resolveDiscourseUnderDiscussion(
         thisPlayerTotalInformationState: DialogTIS,
-        playerMove?: IllocutionaryPropositionType,
+        playerMove?: IllocutionaryProposition,
     ) {
         await this.turnTaker.resolveDiscourseUnderDiscussion(
             thisPlayerTotalInformationState,
@@ -57,9 +58,9 @@ export class TwoPlayerController extends PlayerController {
     readonly dialogStates: Map<string, DialogTIS>;
     readonly rounds: number;
     private currentRound = 0;
-    private players: PlayerType[];
+    private players: Player[];
 
-    constructor(players: PlayerType[], turnTaker: TurnTaker, rounds: number) {
+    constructor(players: Player[], turnTaker: TurnTaker, rounds: number) {
         super(turnTaker);
         this.players = players;
         this.rounds = rounds;
@@ -67,7 +68,7 @@ export class TwoPlayerController extends PlayerController {
     }
 
     private static initializeDialogStates = (
-        players: PlayerType[],
+        players: Player[],
     ): Map<string, DialogTIS> =>
         players.reduce(
             (map, player) =>
@@ -75,7 +76,7 @@ export class TwoPlayerController extends PlayerController {
                     player.name,
                     new DialogTIS(
                         new DialogGameBoard(
-                            player.totalInformationState.dialogGameboard,
+                            player.totalInformationState.dialogGameBoard,
                         ),
                         new DialogPIS(
                             player.totalInformationState.privateInformationState,
@@ -89,7 +90,7 @@ export class TwoPlayerController extends PlayerController {
         totalInformationStates: Map<string, DialogTIS>,
     ): {
         playerName: string;
-        totalInformationState: TotalInformationStateType;
+        totalInformationState: TotalInformationState;
     }[] =>
         Array.from(totalInformationStates.entries()).map(
             ([playerName, totalInformationState]) => ({
@@ -126,7 +127,7 @@ export class TwoPlayerController extends PlayerController {
         return this.currentRound >= this.rounds;
     }
 
-    getGameResults(): MultiPlayerGameOutputType {
+    getGameResults(): z.infer<typeof MultiPlayerGameOutput> {
         return {
             totalInformationStates: TwoPlayerController.statesToArray(
                 this.dialogStates,
@@ -162,7 +163,7 @@ export class TwoPlayerController extends PlayerController {
                 otherPlayerTotalInformationState.dgb?.getLatestMove()
                     ?.utterance ?? "";
             const discourse =
-                thisPlayerTotalInformationState.dgb.getDiscourseAsString();
+                thisPlayerTotalInformationState.dgb.getDiscourseAsStringCondensed();
             const otherPlayerMove =
                 await this.turnTaker.identifyMoveWithOtherUtterance(
                     thisPlayerName,
@@ -193,14 +194,14 @@ export class TwoPlayerController extends PlayerController {
 
 export class OnePlayerController extends PlayerController {
     readonly thisPlayerTotalInformationState: DialogTIS;
-    private thisPlayer: PlayerType;
+    private thisPlayer: Player;
 
-    constructor(thisPlayer: PlayerType, turnTaker: TurnTaker) {
+    constructor(thisPlayer: Player, turnTaker: TurnTaker) {
         super(turnTaker);
         this.thisPlayer = thisPlayer;
         this.thisPlayerTotalInformationState = new DialogTIS(
             new DialogGameBoard(
-                thisPlayer.totalInformationState.dialogGameboard,
+                thisPlayer.totalInformationState.dialogGameBoard,
             ),
             new DialogPIS(
                 thisPlayer.totalInformationState.privateInformationState,
@@ -213,7 +214,7 @@ export class OnePlayerController extends PlayerController {
             throw new Error("This Private Information State can't be null");
         }
         const discourse =
-            this.thisPlayerTotalInformationState.dgb.getDiscourseAsString();
+            this.thisPlayerTotalInformationState.dgb.getDiscourseAsStringCondensed();
         if (otherPlayerUtterance && otherPlayerUtterance !== "") {
             const otherPlayerMove =
                 await this.turnTaker.identifyMoveWithOtherUtterance(
@@ -246,7 +247,7 @@ export class OnePlayerController extends PlayerController {
         );
     }
 
-    getGameResults(): OnePlayerGameOutputType {
+    getGameResults(): z.infer<typeof OnePlayerGameOutput> {
         return {
             playerName: this.thisPlayer.name,
             playerUtterance:
@@ -258,9 +259,9 @@ export class OnePlayerController extends PlayerController {
 }
 
 export class TurnTaker {
-    readonly modelConfig: ModelConfigType;
+    readonly modelConfig: ModelConfig;
 
-    constructor(modelConfig: ModelConfigType) {
+    constructor(modelConfig: ModelConfig) {
         this.modelConfig = modelConfig;
     }
 
@@ -301,7 +302,7 @@ export class TurnTaker {
         otherPlayerName: string,
         otherPlayerUtterance: string,
         discourse: string,
-    ): Promise<IllocutionaryPropositionType> {
+    ): Promise<IllocutionaryProposition> {
         return await new IdentifyMoveWithOtherUtteranceAction().play(
             thisPlayerName,
             otherPlayerName,

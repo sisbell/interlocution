@@ -1,9 +1,11 @@
 import express, {Request, Response} from "express";
 import {runFlow} from "@genkit-ai/flow";
 import bodyParser from "body-parser";
-import {InMemoryPlayerCache, multiPlayerGameFlow, onePlayerGameFlow} from "@interlocution/flows";
-import {OnePlayerGameInputType, OnePlayerGameOutputType, PlayerType} from "@interlocution/core/models";
+import {createPlanFlow, InMemoryPlayerCache, multiPlayerGameFlow, onePlayerGameFlow} from "@interlocution/flows";
+import {OnePlayerGameInput, OnePlayerGameOutput, Player} from "@interlocution/core/models";
 import cors from "cors";
+import {CreatePlanInput} from "@interlocution/core";
+import {z} from "zod";
 
 const enableCorsLocalhost = process.env.CORS_ALL?.toUpperCase() !== 'FALSE';
 
@@ -35,9 +37,9 @@ app.post("/game/play", async (req: Request, res: Response) => {
     const otherPlayerName = playGameInput.name;
     const otherPlayerUtterance = playGameInput.utterance;
     const modelName = playGameInput.modelName ? playGameInput.modelName : "vertexai/gemini-1.5-flash";
-    const player: PlayerType = (await playerCache.get(playerId))!;
+    const player: Player = (await playerCache.get(playerId))!;
 
-    const onePlayerGameInputType: OnePlayerGameInputType = {
+    const onePlayerGameInput: z.infer<typeof OnePlayerGameInput> = {
         modelConfig: {
             modelName: modelName
         },
@@ -45,11 +47,11 @@ app.post("/game/play", async (req: Request, res: Response) => {
         otherPlayerUtterance: otherPlayerUtterance,
         thisPlayer: player,
     };
-    console.log(JSON.stringify(onePlayerGameInputType));
+    console.log(JSON.stringify(onePlayerGameInput));
 
-    const playGameOutput: OnePlayerGameOutputType = await runFlow(onePlayerGameFlow, onePlayerGameInputType);
+    const playGameOutput: z.infer<typeof OnePlayerGameOutput> = await runFlow(onePlayerGameFlow, onePlayerGameInput);
     console.log(JSON.stringify(playGameOutput));
-    const playerResult: PlayerType = {
+    const playerResult: Player = {
         name: playGameOutput.playerName,
         totalInformationState: playGameOutput.totalInformationState
     }
@@ -59,7 +61,15 @@ app.post("/game/play", async (req: Request, res: Response) => {
 });
 
 app.post("/aiplayer/create", async (req: Request, res: Response) => {
-    const createPlayerInput: PlayerType = req.body;
+    const createPlayerInput: Player = req.body;
+    const privateInformationState = createPlayerInput.totalInformationState.privateInformationState;
+    const createPlanInput: CreatePlanInput = {
+        privateInformationState: privateInformationState,
+        modelConfig: {
+            modelName: "vertexai/gemini-1.5-flash",
+        }
+    }
+    privateInformationState.planInfo = await runFlow(createPlanFlow, createPlanInput);
     await playerCache.set(createPlayerInput.playerId!, createPlayerInput);
     res.json(createPlayerInput);
 });
@@ -68,6 +78,7 @@ app.post("/game/multiplay", async (req: Request, res: Response) => {
     const playGameInput = req.body;
     const playGameOutput = await runFlow(multiPlayerGameFlow, playGameInput);
     console.log(playGameOutput);
+    //TODO: Generate Plans
     res.json(playGameOutput);
 });
 

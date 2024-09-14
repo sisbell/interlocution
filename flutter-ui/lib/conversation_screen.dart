@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'chat_screen.dart';
@@ -68,6 +69,19 @@ class _ConversationScreenState extends State<ConversationScreen> {
           Expanded(
             child: Column(
               children: [
+                Expanded(
+                  child: Markdown(
+                      data: totalInformationState
+                                  ?.privateInformationState.planInfo !=
+                              null
+                          ? totalInformationState!.privateInformationState.planInfo!.plan
+                          : "N/A"),
+                ),
+                const Divider(
+                  height: 1,
+                  thickness: 1,
+                  color: Colors.grey,
+                ),
                 Expanded(
                   child: FactsScreen(
                     totalInformationState: totalInformationState,

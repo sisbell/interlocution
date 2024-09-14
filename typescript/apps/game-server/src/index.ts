@@ -27,6 +27,6 @@ configureGenkit({
 const shouldStartFlowsServer = process.env.FLOW_SERVER?.toUpperCase() !== 'FALSE';
 
 if (shouldStartFlowsServer) {
-    startFlowsServer();
+  //  startFlowsServer();
 }
 startLanguageGameServer();

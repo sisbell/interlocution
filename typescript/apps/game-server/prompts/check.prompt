@@ -5,29 +5,47 @@ input:
   schema:
     discourse: string
     beliefs: string
-    utterance: string
+    plan: string
+    planStage?: string
+    planReason?: string
 output:
   format: json
   schema:
     move: string
     utterance: string
     meaning: string
+    planStage: string
+    planReason: string
 ---
 {{role "system"}}
-Discourse
-{{discourse}}
+Remain focused on following your plan of action and achieving your goals. Do not deviate.
 
-Beliefs
+# Your Plan of Action
+{{plan}}
+
+# Current Planning Stage
+{{planStage}} - {{planReason}}
+
+# Your Beliefs
 {{beliefs}}
 
-Message
-{{utterance}}
-
+# Instructions
 Use the discourse to understand the context of the message.
 Based on your beliefs, either confirm or deny the message.
 
+## Move
 Take one of the following moves:
 CONFIRM, DENY
 
+## Plan Advancement
+Decide whether you can advance your stage in the plan.
+Give the plan stage you are at after this move. Also give the reason you are at this stage in the plan.
+
+## Utterance
+Utterance is the natural response you give based on the move. Keep within a couple of sentences in length.
 Meaning includes the meaning of your utterance, your name name and information about the move type. Include all important information in your utterance. This should be a natural sounding message.
+
+{{role "user"}}
+# Chat/Discourse History
+{{discourse}}
 

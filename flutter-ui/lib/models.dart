@@ -246,34 +246,30 @@ class GameBoard {
   }
 }
 
-class PrivateInformationState {
-  final String genre;
-  final String goals;
-  final String? beliefs; // Optional
-  final List<String>? agenda; // Optional
+class PlanInfo {
+  final String plan;
+  final String? stage;
+  final String? reason;
+  final List<String>? agenda;
 
-  PrivateInformationState({
-    required this.genre,
-    required this.goals,
-    this.beliefs,
-    this.agenda,
-  });
+  PlanInfo({required this.plan, this.stage, this.reason, this.agenda});
 
-  factory PrivateInformationState.fromJson(Map<String, dynamic> json) =>
-      PrivateInformationState(
-        genre: json['genre'] as String,
-        goals: json['goals'] as String,
-        beliefs: json['beliefs'] as String?,
+  factory PlanInfo.fromJson(Map<String, dynamic> json) => PlanInfo(
+        plan: json['plan'] as String,
+        stage: json['stage'] as String?,
+        reason: json['reason'] as String?,
         agenda: (json['agenda'] as List?)?.map((e) => e as String).toList(),
       );
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = <String, dynamic>{
-      'genre': genre,
-      'goals': goals,
+      'plan': plan,
     };
-    if (beliefs != null) {
-      data['beliefs'] = beliefs;
+    if (stage != null) {
+      data['stage'] = stage;
+    }
+    if (reason != null) {
+      data['reason'] = reason;
     }
     if (agenda != null) {
       data['agenda'] = agenda;
@@ -282,24 +278,55 @@ class PrivateInformationState {
   }
 }
 
+class PrivateInformationState {
+  final String genre;
+  final String goals;
+  final PlanInfo? planInfo;
+  final String? beliefs;
+
+  PrivateInformationState(
+      {required this.genre, required this.goals, this.planInfo, this.beliefs});
+
+  factory PrivateInformationState.fromJson(Map<String, dynamic> json) =>
+      PrivateInformationState(
+          genre: json['genre'] as String,
+          goals: json['goals'] as String,
+          planInfo: PlanInfo.fromJson(json['planInfo']),
+          beliefs: json['beliefs'] as String?);
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = <String, dynamic>{
+      'genre': genre,
+      'goals': goals
+    };
+    if (planInfo != null) {
+      data['planInfo'] = planInfo!.toJson();
+    }
+    if (beliefs != null) {
+      data['beliefs'] = beliefs;
+    }
+    return data;
+  }
+}
+
 class TotalInformationState {
-  final GameBoard dialogGameboard;
+  final GameBoard dialogGameBoard;
   final PrivateInformationState privateInformationState;
 
   TotalInformationState({
-    required this.dialogGameboard,
+    required this.dialogGameBoard,
     required this.privateInformationState,
   });
 
   factory TotalInformationState.fromJson(Map<String, dynamic> json) =>
       TotalInformationState(
-        dialogGameboard: GameBoard.fromJson(json['dialogGameboard']),
+        dialogGameBoard: GameBoard.fromJson(json['dialogGameBoard']),
         privateInformationState:
             PrivateInformationState.fromJson(json['privateInformationState']),
       );
 
   Map<String, dynamic> toJson() => {
-        'dialogGameboard': dialogGameboard.toJson(),
+        'dialogGameBoard': dialogGameBoard.toJson(),
         'privateInformationState': privateInformationState.toJson(),
       };
 }

@@ -12,21 +12,23 @@ export enum IllocutionaryRelation {
     ENGAGE = "ENGAGE",
     DISENGAGE = "DISENGAGE",
     INITIATING_SPEECH = "INITIATING_SPEECH",
+    COUNTER_PARTING = "COUNTER_PARTING",
 }
 
 // Basic Data Models
-export const Fact = z.object({
+const Fact = z.object({
     proposition: z.string(),
     discourseEntryIndex: z.number(),
 });
 
-export const DiscourseEntry = z.object({
+const DiscourseEntry = z.object({
     id: z.number(),
     tag: z.string(),
     proposition: z.string(),
     linkedId: z.number().optional(),
     speaker: z.string(),
     addressee: z.string(),
+    role: z.string(),
 });
 
 export const DiscoursePool = z.object({
@@ -41,13 +43,16 @@ const IllocutionaryProposition = z.object({
     illocutionaryRelation: z.nativeEnum(IllocutionaryRelation),
     speaker: z.string(),
     addressee: z.string(),
+    role: z.string(),
     utterance: z.string().optional(),
     meaning: z.string().optional(),
+    planStage: z.string().optional(),
+    planReason: z.string().optional(),
     discourseEntryId: z.number().optional(),
 });
 
 // Composite Data Models
-export const Gameboard = z.object({
+export const GameBoard = z.object({
     name: z.string(),
     moves: z.array(IllocutionaryProposition).optional(),
     discoursePool: DiscoursePool.optional(),
@@ -56,15 +61,22 @@ export const Gameboard = z.object({
     facts: z.array(Fact).optional(),
 });
 
+const PlanInfo = z.object({
+    plan: z.string(),
+    stage: z.string().optional(),
+    reason: z.string().optional(),
+    agenda: z.array(z.string()).optional(),
+})
+
 export const PrivateInformationState = z.object({
     genre: z.string(),
     goals: z.string(),
+    planInfo: PlanInfo.optional(),
     beliefs: z.string().optional(),
-    agenda: z.array(z.string()).optional(),
 });
 
 export const TotalInformationState = z.object({
-    dialogGameboard: Gameboard,
+    dialogGameBoard: GameBoard,
     privateInformationState: PrivateInformationState,
 });
 
@@ -74,12 +86,30 @@ export const Player = z.object({
     totalInformationState: TotalInformationState,
 });
 
-export const ModelConfig = z.object({modelName: z.string()});
+const ModelConfig = z.object({modelName: z.string()});
 
 // Input/Output Schemas for Flows
-export const multiPlayerGameInput = z.object({
+export const CreatePlanInput = z.object({
     modelConfig: ModelConfig,
-    gameboardSetup: z.object({
+    privateInformationState: PrivateInformationState,
+});
+
+export const OnePlayerGameInput = z.object({
+    modelConfig: ModelConfig,
+    otherPlayerName: z.string(),
+    otherPlayerUtterance: z.string(),
+    thisPlayer: Player,
+});
+
+export const OnePlayerGameOutput = z.object({
+    playerName: z.string(),
+    playerUtterance: z.string(),
+    totalInformationState: TotalInformationState,
+});
+
+export const MultiPlayerGameInput = z.object({
+    modelConfig: ModelConfig,
+    gameBoardSetup: z.object({
         rounds: z.number().refine((rounds) => rounds >= 1, {
             message: "At least one round is required.",
         }),
@@ -90,7 +120,7 @@ export const multiPlayerGameInput = z.object({
     }),
 });
 
-export const multiPlayerGameOutput = z.object({
+export const MultiPlayerGameOutput = z.object({
     totalInformationStates: z.array(
         z.object({
             playerName: z.string(),
@@ -99,34 +129,19 @@ export const multiPlayerGameOutput = z.object({
     ),
 });
 
-export const onePlayerGameInput = z.object({
-    modelConfig: ModelConfig,
-    otherPlayerName: z.string(),
-    otherPlayerUtterance: z.string(),
-    thisPlayer: Player,
-});
-
-export const onePlayerGameOutput = z.object({
-    playerName: z.string(),
-    playerUtterance: z.string(),
-    totalInformationState: TotalInformationState,
-});
-
-
 // Type Exports
-export type DiscourseEntryType = z.infer<typeof DiscourseEntry>;
-export type FactType = z.infer<typeof Fact>;
-export type GameboardType = z.infer<typeof Gameboard>;
-export type IllocutionaryPropositionType = z.infer<
+export type CreatePlanInput = z.infer<typeof CreatePlanInput>;
+export type DiscourseEntry = z.infer<typeof DiscourseEntry>;
+export type Fact = z.infer<typeof Fact>;
+export type GameBoard = z.infer<typeof GameBoard>;
+export type IllocutionaryProposition = z.infer<
     typeof IllocutionaryProposition
 >;
-export type ModelConfigType = z.infer<typeof ModelConfig>;
-export type MultiPlayerGameOutputType = z.infer<typeof multiPlayerGameOutput>;
-export type OnePlayerGameInputType = z.infer<typeof onePlayerGameInput>;
-export type OnePlayerGameOutputType = z.infer<typeof onePlayerGameOutput>;
-export type PlayerType = z.infer<typeof Player>;
-export type PrivateInformationStateType = z.infer<
+export type ModelConfig = z.infer<typeof ModelConfig>;
+export type PlanInfo = z.infer<typeof PlanInfo>;
+export type Player = z.infer<typeof Player>;
+export type PrivateInformationState = z.infer<
     typeof PrivateInformationState
 >
-export type TotalInformationStateType = z.infer<typeof TotalInformationState>;
+export type TotalInformationState = z.infer<typeof TotalInformationState>;
 

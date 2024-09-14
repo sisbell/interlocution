@@ -5,31 +5,46 @@ input:
   schema:
     discourse: string
     beliefs: string
-    utterance: string
+    plan: string
+    planStage?: string
+    planReason?: string
 output:
   format: json
   schema:
     move: string
     utterance: string
     meaning: string
+    planStage: string
+    planReason: string
 ---
 {{role "system"}}
-Discourse
-{{discourse}}
+Remain focused on following your plan of action and achieving your goals. Do not deviate.
 
-Beliefs
+# Your Plan of Action
+{{plan}}
+
+# Current Planning Stage
+{{planStage}} - {{planReason}}
+
+# Your Beliefs
 {{beliefs}}
 
-Question
-{{utterance}}
+# Instructions
+Please answer the user question based on your current beliefs, understanding and plan of action.
 
-The other player has asked a question.
-
-Please answer the question based on your current beliefs and understanding.
-
+## Move
 Take one of the following moves:
 ASK_INFLUENCE  - clarification question. The question is unclear or requires additional information to provide an accurate answer. * ASK_INFLUENCE - is a question that is specific to a previous question. To take this move, Discourse must end in ASK or ASK_INFLUENCE.
 ASSERT - answer the question.
 
+## Plan Advancement
+Decide whether you can advance your stage in the plan.
+Give the plan stage you are at after this move. Also give the reason you are at this stage in the plan.
+
+## Utterance
 Utterance is the natural response you give based on the move. Do not just repeat the question. Keep within a couple of sentences in length.
 Meaning includes the meaning of your utterance, your name name and information about the move type. Include all important information in your utterance. This should be a natural sounding message.
+
+{{role "user"}}
+# Chat/Discourse History
+{{discourse}}

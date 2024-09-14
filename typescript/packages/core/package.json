@@ -16,9 +16,9 @@
   "author": "Shane Isbell",
   "license": "Apache-2.0",
   "dependencies": {
-    "@genkit-ai/ai": "^0.5.10",
-    "@genkit-ai/core": "^0.5.10",
-    "@genkit-ai/dotprompt": "^0.5.10",
+    "@genkit-ai/ai": "^0.5.12",
+    "@genkit-ai/core": "^0.5.12",
+    "@genkit-ai/dotprompt": "^0.5.12",
     "zod": "^3.23.8"
   },
   "devDependencies": {

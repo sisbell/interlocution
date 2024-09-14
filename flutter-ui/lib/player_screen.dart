@@ -52,7 +52,7 @@ class _PlayerScreenState extends State<PlayerScreen> {
     var privateInformationState = PrivateInformationState(
         genre: "Default", goals: goals, beliefs: beliefs);
     var totalInformationState = TotalInformationState(
-        dialogGameboard: dgb, privateInformationState: privateInformationState);
+        dialogGameBoard: dgb, privateInformationState: privateInformationState);
     var createRequest = CreatePlayerRequest(
         playerId: playerId,
         name: playerName,

@@ -1,9 +1,9 @@
 import NodeCache from 'node-cache';
-import {PlayerType} from "@interlocution/core";
+import {Player} from "@interlocution/core";
 
 interface PlayerCache {
-    get(playerId: string): Promise<PlayerType | null>;
-    set(playerId: string, player: PlayerType): Promise<void>;
+    get(playerId: string): Promise<Player | null>;
+    set(playerId: string, player: Player): Promise<void>;
     delete(playerId: string): Promise<void>;
 }
 
@@ -14,11 +14,11 @@ export class InMemoryPlayerCache implements PlayerCache {
         this.cache = new NodeCache({ stdTTL: ttlSeconds });
     }
 
-    async get(playerId: string): Promise<PlayerType | null> {
-        return this.cache.get<PlayerType>(playerId) || null;
+    async get(playerId: string): Promise<Player | null> {
+        return this.cache.get<Player>(playerId) || null;
     }
 
-    async set(playerId: string, player: PlayerType): Promise<void> {
+    async set(playerId: string, player: Player): Promise<void> {
         this.cache.set(playerId, player);
     }
 

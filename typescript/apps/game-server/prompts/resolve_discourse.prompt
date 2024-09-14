@@ -3,8 +3,11 @@ config:
   temperature: 1.0
 input:
   schema:
-    discourse: string
+    discourseFull: string
     facts: string
+    plan: string
+    planStage?: string
+    planReason?: string
 output:
   format: json
   schema:
@@ -14,12 +17,16 @@ output:
       resolvedId: number
     reason: string
 ---
-Discourse
-{{discourse}}
+# Your Plan of Action
+{{plan}}
 
-Facts
+# Current Planning Stage
+{{planStage}} - {{planReason}}
+
+# Observed Facts
 {{facts}}
 
+# Instructions
 Objective:
 Track the evolution of a discourse by identifying propositions that become irrelevant or resolved due to new information.
 This process aids in understanding the flow of conversation and identifying key points of agreement or disagreement.
@@ -52,4 +59,9 @@ Output:
 * Updated FACTS: The expanded set of confirmed information (if any ASSERT utterances were processed).
 * Downdated Utterance IDs (resolvedIds): A list of Utterance IDs that have been marked as resolved due to acceptance or if they were used in adding a fact
 * reason - explain why you downdated each of the utterances (if applicable)
+
+{{role "user"}}
+# Chat/Discourse History
+{{discourseFull}}
+
 

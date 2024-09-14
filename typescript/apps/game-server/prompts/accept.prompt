@@ -6,37 +6,50 @@ input:
     discourse: string
     beliefs: string
     facts: string
-    goals: string
-    utterance: string
+    plan: string
+    planStage?: string
+    planReason?: string
 output:
   format: json
   schema:
     move: string
     utterance: string
     meaning: string
+    planStage: string
+    planReason: string
 ---
 {{role "system"}}
-Discourse
-{{discourse}}
+Remain focused on following your plan of action and achieving your goals. Do not deviate.
 
-Beliefs
+# Your Plan of Action
+{{plan}}
+
+# Current Planning Stage
+{{planStage}} - {{planReason}}
+
+# Your Beliefs
 {{beliefs}}
 
-Facts
+# Observed Facts
 {{facts}}
 
-Goals
-{{goals}}
+# Instructions
+The user has accepted an assertion in the discourse.
 
-Acceptance Message
-{{utterance}}
-
-The other player has accepted an assertion in the discourse.
-
+## Move
 Take one of the following moves:
-ASSERT - based on your beliefs you can add additional beliefs to the assertion
-DISENGAGE - if all the facts resolve your goals
-ASK - the facts do not resolve your goals. The associated message should ask a question to help resolve a missing goal.
+DISENGAGE - if your plan of action has been achieved.
+ASSERT - your plan of action has not been achieved. Based on your beliefs, you can add additional beliefs to the assertion if it drives your plan forward.
+ASK - your plan of action has not been achieved. The associated message should ask a question to help drive your plan of action to a successful conclusion.
 
+## Plan Advancement
+Decide whether you can advance your stage in the plan.
+Give the plan stage you are at after this move. Also give the reason you are at this stage in the plan.
+
+## Utterance
 Utterance is the natural response you give based on the move. Keep within a couple of sentences in length.
 Meaning includes the meaning of your utterance, your name name and information about the move type. Include all important information in your utterance. This should be a natural sounding message.
+
+{{role "user"}}
+# Chat/Discourse History
+{{discourse}}
