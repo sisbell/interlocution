@@ -8,8 +8,10 @@ import {
     TotalInformationState
 } from "./models";
 import {DialogGameBoard, DialogPIS, DialogTIS} from "./information_state";
+import type {Genkit} from "genkit";
 import {
-    actionIllocutionaryRelationMap,
+    createActionMap,
+    GameAction,
     IdentifyMoveWithOtherUtteranceAction,
     ResolveDiscourseGameAction,
 } from "./actions";
@@ -260,9 +262,13 @@ export class OnePlayerController extends PlayerController {
 
 export class TurnTaker {
     readonly modelConfig: ModelConfig;
+    private ai: Genkit;
+    private actionMap: Map<IllocutionaryRelation, GameAction>;
 
-    constructor(modelConfig: ModelConfig) {
+    constructor(ai: Genkit, modelConfig: ModelConfig) {
+        this.ai = ai;
         this.modelConfig = modelConfig;
+        this.actionMap = createActionMap(ai);
     }
 
     async takeTurn(
@@ -277,7 +283,7 @@ export class TurnTaker {
         const latestMove = thisPlayerTotalInformationState.dgb?.getLatestMove();
         const illocutionaryRelation = latestMove?.illocutionaryRelation;
         if (illocutionaryRelation) {
-            await actionIllocutionaryRelationMap
+            await this.actionMap
                 .get(illocutionaryRelation)
                 ?.play(
                     thisPlayerName,
@@ -286,7 +292,7 @@ export class TurnTaker {
                     this.modelConfig,
                 );
         } else {
-            await actionIllocutionaryRelationMap
+            await this.actionMap
                 .get(IllocutionaryRelation.INITIATING_SPEECH)
                 ?.play(
                     thisPlayerName,
@@ -303,7 +309,7 @@ export class TurnTaker {
         otherPlayerUtterance: string,
         discourse: string,
     ): Promise<IllocutionaryProposition> {
-        return await new IdentifyMoveWithOtherUtteranceAction().play(
+        return await new IdentifyMoveWithOtherUtteranceAction(this.ai).play(
             thisPlayerName,
             otherPlayerName,
             otherPlayerUtterance,
@@ -318,7 +324,7 @@ export class TurnTaker {
         if (!totalInformationState.privateInformationState) {
             throw new Error("Private Information State can't be null");
         }
-        const resolver = new ResolveDiscourseGameAction();
+        const resolver = new ResolveDiscourseGameAction(this.ai);
         const maxRetries = 1;
         let retryCount = 0;
         let success = false;

@@ -1,5 +1,5 @@
 import {DialogTIS} from "./information_state";
-import {prompt} from "@genkit-ai/dotprompt";
+import type {Genkit} from "genkit";
 import {
     Fact,
     IllocutionaryProposition,
@@ -41,6 +41,12 @@ interface PlayerGameBoardInput {
 }
 
 export class IdentifyMoveWithOtherUtteranceAction {
+    private ai: Genkit;
+
+    constructor(ai: Genkit) {
+        this.ai = ai;
+    }
+
     async play(
         currentPlayerName: string,
         otherPlayerName: string,
@@ -48,15 +54,15 @@ export class IdentifyMoveWithOtherUtteranceAction {
         discourse: string,
         modelConfig: ModelConfig,
     ): Promise<IllocutionaryProposition> {
-        const promptTemplate = await prompt("identify_utterance");
-        const generatedResponse = await promptTemplate.generate({
-            model: modelConfig.modelName,
-            input: {
+        const promptTemplate = await this.ai.prompt("identify_utterance");
+        const generatedResponse = await promptTemplate(
+            {
                 utterance: otherPlayerUtterance,
                 discourse: discourse,
             },
-        });
-        const content = extractAndCleanJson(generatedResponse.text());
+            { model: modelConfig.modelName },
+        );
+        const content = extractAndCleanJson(generatedResponse.text);
         const illocutionaryRelation = content?.move?.toUpperCase();
         return {
             illocutionaryRelation: illocutionaryRelation,
@@ -70,6 +76,12 @@ export class IdentifyMoveWithOtherUtteranceAction {
 }
 
 export class ResolveDiscourseGameAction {
+    private ai: Genkit;
+
+    constructor(ai: Genkit) {
+        this.ai = ai;
+    }
+
     async play(
         playerTotalInformationState: DialogTIS,
         modelConfig: ModelConfig,
@@ -78,17 +90,17 @@ export class ResolveDiscourseGameAction {
             throw new Error("Private Information State can't be null");
         }
         const currentPlayerGameBoard = playerTotalInformationState.dgb;
-        const promptTemplate = await prompt("resolve_discourse");
+        const promptTemplate = await this.ai.prompt("resolve_discourse");
         const promptInputFields = createPromptInputFields(
             playerTotalInformationState,
             ["discourseFull", "facts", "planInfo"],
         );
-        const generatedResponse = await promptTemplate.generate({
-            model: modelConfig.modelName,
-            input: promptInputFields,
-        });
+        const generatedResponse = await promptTemplate(
+            promptInputFields,
+            { model: modelConfig.modelName },
+        );
 
-        const responseJson = extractAndCleanJson(generatedResponse.text());
+        const responseJson = extractAndCleanJson(generatedResponse.text);
         for (const fact of responseJson.facts) {
             const f: Fact = {
                 proposition: fact.proposition,
@@ -106,21 +118,27 @@ export class ResolveDiscourseGameAction {
 }
 
 export class MakePlanGameAction {
+    private ai: Genkit;
+
+    constructor(ai: Genkit) {
+        this.ai = ai;
+    }
+
     async play(
         privateInformationState: PrivateInformationState,
         modelConfig: ModelConfig,
     ): Promise<PlanInfo> {
-        const promptTemplate = await prompt("make_plan");
+        const promptTemplate = await this.ai.prompt("make_plan");
         const promptInputFields = {
             goals: privateInformationState.goals,
             beliefs: privateInformationState.beliefs,
         }
-        const generatedResponse = await promptTemplate.generate({
-            model: modelConfig.modelName,
-            input: promptInputFields,
-        });
+        const generatedResponse = await promptTemplate(
+            promptInputFields,
+            { model: modelConfig.modelName },
+        );
         return {
-            plan: generatedResponse.text()
+            plan: generatedResponse.text
         };
     }
 }
@@ -128,8 +146,10 @@ export class MakePlanGameAction {
 export class GeneralGameAction implements GameAction {
     fields: PromptInputField[] = [];
     promptName: string = "";
+    private ai: Genkit;
 
-    constructor(promptName: string, fields: PromptInputField[]) {
+    constructor(ai: Genkit, promptName: string, fields: PromptInputField[]) {
+        this.ai = ai;
         this.fields = fields;
         this.promptName = promptName;
     }
@@ -144,7 +164,7 @@ export class GeneralGameAction implements GameAction {
         if (!currentPlayerTotalInformationState.privateInformationState) {
             throw new Error("Private Information State can't be null");
         }
-        const promptTemplate = await prompt(this.promptName);
+        const promptTemplate = await this.ai.prompt(this.promptName);
         const promptInputFields = createPromptInputFields(
             currentPlayerTotalInformationState,
             this.fields,
@@ -152,12 +172,12 @@ export class GeneralGameAction implements GameAction {
         console.log(
             `${this.promptName} Fields - ${JSON.stringify(promptInputFields)}`,
         );
-        const generatedResponse = await promptTemplate.generate({
-            model: modelConfig.modelName,
-            input: promptInputFields,
-        });
+        const generatedResponse = await promptTemplate(
+            promptInputFields,
+            { model: modelConfig.modelName },
+        );
 
-        const content = extractAndCleanJson(generatedResponse.text());
+        const content = extractAndCleanJson(generatedResponse.text);
         const illocutionaryRelation =
             IllocutionaryRelation[
                 content.move as keyof typeof IllocutionaryRelation
@@ -178,64 +198,63 @@ export class GeneralGameAction implements GameAction {
     }
 }
 
-export const actionIllocutionaryRelationMap: Map<
-    IllocutionaryRelation,
-    GameAction
-> = new Map([
-    [
-        IllocutionaryRelation.ASK,
-        new GeneralGameAction("ask", ["discourse", "beliefs", "planInfo"]),
-    ],
-    [
-        IllocutionaryRelation.ASK_INFLUENCE,
-        new GeneralGameAction("ask", ["discourse", "beliefs", "planInfo"]),
-    ],
-    [
-        IllocutionaryRelation.ACCEPT,
-        new GeneralGameAction("accept", [
-            "discourse",
-            "beliefs",
-            "facts",
-            "planInfo"
-        ]),
-    ],
-    [
-        IllocutionaryRelation.ASSERT,
-        new GeneralGameAction("assert", ["discourse", "beliefs", "planInfo"]),
-    ],
-    [
-        IllocutionaryRelation.CHECK,
-        new GeneralGameAction("check", ["discourse", "beliefs", "planInfo"]),
-    ],
-    [
-        IllocutionaryRelation.CONFIRM,
-        new GeneralGameAction("confirm", [
-            "discourse",
-            "planInfo",
-            "beliefs",
-        ]),
-    ],
-    [
-        IllocutionaryRelation.COUNTER_PARTING,
-        new GeneralGameAction("ask", ["discourse", "beliefs", "planInfo"]),
-    ],
-    [
-        IllocutionaryRelation.DENY,
-        new GeneralGameAction("deny", [
-            "discourse",
-            "planInfo",
-            "beliefs",
-        ]),
-    ],
-    [
-        IllocutionaryRelation.INITIATING_SPEECH,
-        new GeneralGameAction("initiating_speech", [
-            "discourse",
-            "planInfo",
-            "facts",
-        ]),
-    ],
-]);
+export function createActionMap(ai: Genkit): Map<IllocutionaryRelation, GameAction> {
+    return new Map([
+        [
+            IllocutionaryRelation.ASK,
+            new GeneralGameAction(ai, "ask", ["discourse", "beliefs", "planInfo"]),
+        ],
+        [
+            IllocutionaryRelation.ASK_INFLUENCE,
+            new GeneralGameAction(ai, "ask", ["discourse", "beliefs", "planInfo"]),
+        ],
+        [
+            IllocutionaryRelation.ACCEPT,
+            new GeneralGameAction(ai, "accept", [
+                "discourse",
+                "beliefs",
+                "facts",
+                "planInfo"
+            ]),
+        ],
+        [
+            IllocutionaryRelation.ASSERT,
+            new GeneralGameAction(ai, "assert", ["discourse", "beliefs", "planInfo"]),
+        ],
+        [
+            IllocutionaryRelation.CHECK,
+            new GeneralGameAction(ai, "check", ["discourse", "beliefs", "planInfo"]),
+        ],
+        [
+            IllocutionaryRelation.CONFIRM,
+            new GeneralGameAction(ai, "confirm", [
+                "discourse",
+                "planInfo",
+                "beliefs",
+            ]),
+        ],
+        [
+            IllocutionaryRelation.COUNTER_PARTING,
+            new GeneralGameAction(ai, "ask", ["discourse", "beliefs", "planInfo"]),
+        ],
+        [
+            IllocutionaryRelation.DENY,
+            new GeneralGameAction(ai, "deny", [
+                "discourse",
+                "planInfo",
+                "beliefs",
+            ]),
+        ],
+        [
+            IllocutionaryRelation.INITIATING_SPEECH,
+            new GeneralGameAction(ai, "initiating_speech", [
+                "discourse",
+                "planInfo",
+                "facts",
+            ]),
+        ],
+    ]);
+}
 
 const extractAndCleanJson = (input: string): any | null => {
     const match = input.replace(/\n/g, "").match(/.*?({.*}).*/);

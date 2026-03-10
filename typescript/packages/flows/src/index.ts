@@ -1,2 +1,2 @@
 export * from './cache.js';
-export * from './flows.js';
+export { registerFlows } from './flows.js';
