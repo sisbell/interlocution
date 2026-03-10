@@ -48,11 +48,18 @@ export class DialogGameBoard {
     }
 
     addFact(fact: Fact): void {
-        this.facts.push(fact);
+        const exists = this.facts.some(
+            f => f.discourseEntryIndex === fact.discourseEntryIndex
+        );
+        if (!exists) {
+            this.facts.push(fact);
+        }
     }
 
     addResolvedDiscourses(reason: string): void {
-        this.resolvedDiscourses.push(reason);
+        if (!this.resolvedDiscourses.includes(reason)) {
+            this.resolvedDiscourses.push(reason);
+        }
     }
 
     getFacts(): Fact[] {

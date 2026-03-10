@@ -40,5 +40,5 @@ gcloud run deploy gameserver \
   --port 8000 \
   --update-env-vars FLOW_SERVER=FALSE,CORS_ALL=FALSE \
   --memory 1G \ 
-  --min-instances 1 
+  --min-instances 0
 ```

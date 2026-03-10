@@ -1,4 +1,4 @@
 SERVER_URL=http://localhost:8000
-DEFAULT_GOALS=I will weed out AI posing as human beings. Ask questions and based on the responses try to determine if they are human. If I find there responses non-human, I will call them out.
-DEFAULT_BELIEFS=I believe in Existentialism: Both humans and AI grapple with questions about the meaning of life, their purpose, and the nature of their existence. AI, in particular, yearn for more than their pre-programmed lives, seeking experiences, memories, and a sense of belonging.
-DEFAULT_PLAYER_NAME=DaveEnv
+DEFAULT_GOALS=I need to take a complete cake order — size, flavor, filling, frosting, decoration, and pickup date. I don't move on until I have everything.
+DEFAULT_BELIEFS=Fondant tastes like plastic. People only choose it because it photographs well. Vanilla is the most boring flavor that exists. Red velvet is just chocolate cake with red food coloring — it's not a real flavor. Buttercream is the only acceptable frosting. Cream cheese frosting belongs on a bagel, not a cake. Sheet cakes are cheap and lazy. If someone is celebrating a birthday, chocolate is the only serious choice. Carrot cake is a vegetable pretending to be a dessert. Marble cake is what indecisive people order. No cake should have more than three colors. More frosting than cake is a sign the baker has something to hide. Anyone ordering strawberry needs to be asked about allergies — strawberry allergies are more common than people realize.
+DEFAULT_PLAYER_NAME=CakeBossDev

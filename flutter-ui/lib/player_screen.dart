@@ -8,7 +8,6 @@ import 'models.dart';
 
 var playerId = generateId();
 var playerName = "";
-var modelName = "vertexai/gemini-1.5-flash";
 
 var client = Client();
 String defaultGoals = dotenv.env['DEFAULT_GOALS']!;
